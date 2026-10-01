@@ -105,6 +105,43 @@ pub fn verifica_true_examples(){
 // 12) Projete uma função que verifique se uma lista de números está em ordem não decrescente. Dica: use
 // dois casos base
 
+/// Recebe uma lista de números inteiros e retorna se a lista está ordenada em ordem não decrescente ou não
+pub fn nao_dec(lista: List(Int)) -> Bool{
+    case lista{
+        [] -> True
+        [_] -> True
+        [primeiro, segundo] -> case primeiro <= segundo{
+            True -> True
+            False -> False
+        }
+        [primeiro, segundo, ..resto] -> case {primeiro <= segundo} && {nao_dec(resto) == True}{
+            True -> True
+            False -> False
+        } 
+    }
+}
+
+pub fn nao_dec_examples(){
+    check.eq(nao_dec([1, 2, 3]), True)
+    check.eq(nao_dec([]), True)
+    check.eq(nao_dec([1]), True)
+    check.eq(nao_dec([1, 1, 4, 1]), False)
+    check.eq(nao_dec([3, 2, 1]), False)
+}
+
+
+// 13) Projete uma função que receba como entrada uma lista e devolva uma lista com os mesmos elementos
+// da entrada mas em ordem contrária. Dica: projete uma função auxiliar para adicionar um elemento
+// no final de uma lista
+
+// Para solucionar essa questão precisaremos de uma nova lista, a atribuição de elementos é feita recursivamente
+// do final da lista para o começo, o ultimo elemento da lista original será adicionado na nova lista como sendo o primeiro
+// até então conseguimos fazer sem utilização de funções auxiliares, a partir do penúltimo deveremos adicionar os elementos ao final desta lista
+// temos que levar em consideração que a lista é feita no início da recursão, ou seja, de algum modo o primeiro valor deve ser inserido num escopo assim:
+// [resto, primeiro]
+
+/// Função que dada uma lista de valores inteiros e um número inteiro 'n', adiciona n ao final da lista
+//pub fn add_final(lista: List(Int), n: Int)
 
 
 // 17) O Miguel é doutorando em física e precisa coletar dados de um experimento, mas ele só tem à sua dis-
@@ -178,4 +215,50 @@ pub fn lucro_sorvete_examples(){
     check.eq(lucro_sorvete([Manga, Manga, Manga]), 12)
     check.eq(lucro_sorvete([]), 0)
     check.eq(lucro_sorvete([Uva, Morango, Manga, Manga, Uva, Morango]), 18)
+}
+
+// 19) O mestrando em física Alberto está tendo problemas com o equipamento que ele está usando para
+// medir a temperatura de um material. O equipamento faz uma leitura a cada 10 segundos, mas, em
+// vez de gerar apenas um número (temperatura), por vez, ele está gerando o mesmo número diversas
+// vezes a cada leitura. Como o Alberto não tem verba para consertar o equipamento, ele está contando
+// com a sua ajuda para fazer um programa que corrige os dados lidos pelo equipamento. Note que ele
+// espera que cada leitura seja maior que a anterior, então se o equipamento ler os valores 3, 3, 7, 7, 7,
+// 10 a leitura estará errada, pois o correto seria 3, 7, 10.
+
+// Para realizar esse problema precisaremos de uma função auxiliar para conferir se um determinando número está dentro da lista,
+// só adicionaremos na lista nova os elementos cujo não estão dentro da lista nova, para isso dividiremos a lista original e veremos elemento
+// a elemento
+
+/// Função que dado uma lista numérica de inteiros 'lista' e um numero inteiro 'n', confere se n já está na dentro da lista
+/// o retorno da função é um booleano, respondendo se o número está ou não presente
+pub fn confere_num(lista: List(Int), n: Int) -> Bool{
+    case lista{
+        [] -> False
+        [prim, ..resto] ->
+        case prim == n{
+            True -> True
+            False -> confere_num(resto, n)
+        }
+    }
+}
+
+pub fn confere_num_examples(){
+    check.eq(confere_num([4, 3, 1], 1), True)
+    check.eq(confere_num([4, 3, 1], 3), True)
+    check.eq(confere_num([4, 3, 1], 4), True)
+    check.eq(confere_num([4, 3, 1], 2), False)
+    check.eq(confere_num([4], 4), True)
+    check.eq(confere_num([], 3), False)
+}
+
+/// Função remove os números repetidos de uma lista de inteiros e retorna uma nova lista sem as repetições
+pub fn remove_repet(lista: List(Int)) -> List(Int){
+    case lista{
+        [] -> []
+        [primeiro, ..resto] ->
+        case confere_num(resto, primeiro){
+            True -> remove_repet(resto)
+            False -> [primeiro, ..remove_repet(resto)]
+        }
+    }
 }
