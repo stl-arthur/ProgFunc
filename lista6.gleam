@@ -100,3 +100,82 @@ pub fn verifica_true_examples(){
     check.eq(verifica_true([False, True, True, False, True, False]), False)
     check.eq(verifica_true([]), True)
 }
+
+
+// 12) Projete uma função que verifique se uma lista de números está em ordem não decrescente. Dica: use
+// dois casos base
+
+
+
+// 17) O Miguel é doutorando em física e precisa coletar dados de um experimento, mas ele só tem à sua dis-
+// posição um equipamento precário que produz algumas leituras incorretas. O equipamento não deveria
+// produzir valores negativos, mas em um teste preliminar o Miguel percebeu que o equipamento está
+// produzindo números negativos. A boa notícia é que todos os números não negativos produzidos pelo
+// equipamento estão corretos. Projete uma função que elimine os valores incorretos de uma sequência
+// de valores produzidos pelo equipamento.
+
+/// Função que dado uma lista de valores inteiros, remove todos os valores não positivos e retorna a lista
+/// somente com valores inteiros positivos
+pub fn rem_neg(lista: List(Int)) -> List(Int){
+    case lista{
+        [] -> []
+        [prim, ..resto] -> 
+        case prim < 0{
+            True -> rem_neg(resto)
+            False -> [prim, ..rem_neg(resto)]
+        }
+    }
+}
+
+pub fn rem_neg_examples(){
+    check.eq(rem_neg([1, 2, -1, -5, 4]), [1, 2, 4])
+    check.eq(rem_neg([]), [])
+    check.eq(rem_neg([-1, -6]), [])
+    check.eq(rem_neg([-1]), [])
+    check.eq(rem_neg([1]), [1])
+}
+
+// 18) Júlia tem uma pequena empresa de sorvetes que vende três sabores diferentes: manga, uva e morango.
+// Cada sorvete é vendido por 10 reais, mas o custo de produção de cada sorvete depende do sabor: o de
+// manga custa 6, o de uva 7 e o de morango 8. Toda vez que a Júlia vende um sorvete ela anota o sabor
+// em uma lista. Após ter anotado os sabores dos sorvetes vendidos em uma lista, é hora de calcular
+// quanto foi o ganho, e para isso a Júlia precisa da sua ajuda. Projete uma função que receba como
+// entrada uma lista com os sabores dos sorvetes vendidos e calcule qual foi o ganho da Júlia vendendo
+// os sorvetes.
+
+
+/// Tipo enumerado respectivo aos sabores de sorvete em uma sorveteria
+pub type Sabor{
+    Manga
+    Uva
+    Morango
+}
+
+
+/// Recebe como parametro uma lista de sabores, os sabores são do tipo enumerado 'Sabor',
+/// a função retorna o valor total recebido através dos sabores presentes na lista
+/// cada sabor tem um valor relacionado a ser somado no total recebido
+/// Manga > 4
+/// Uva > 3
+/// Morango > 2
+
+pub fn lucro_sorvete(vendas: List(Sabor)) -> Int{
+    case vendas{
+        [] -> 0
+        [sabor, ..resto] ->
+        case sabor{
+            Manga -> 4 + lucro_sorvete(resto)
+            Uva -> 3 + lucro_sorvete(resto)
+            Morango -> 2 + lucro_sorvete(resto)
+        }
+    }
+}
+
+pub fn lucro_sorvete_examples(){
+    check.eq(lucro_sorvete([Morango, Morango]), 4)
+    check.eq(lucro_sorvete([Morango, Uva]), 5)
+    check.eq(lucro_sorvete([Uva, Morango]), 5)
+    check.eq(lucro_sorvete([Manga, Manga, Manga]), 12)
+    check.eq(lucro_sorvete([]), 0)
+    check.eq(lucro_sorvete([Uva, Morango, Manga, Manga, Uva, Morango]), 18)
+}
