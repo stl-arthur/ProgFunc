@@ -140,8 +140,108 @@ pub fn nao_dec_examples(){
 // temos que levar em consideração que a lista é feita no início da recursão, ou seja, de algum modo o primeiro valor deve ser inserido num escopo assim:
 // [resto, primeiro]
 
-/// Função que dada uma lista de valores inteiros e um número inteiro 'n', adiciona n ao final da lista
-//pub fn add_final(lista: List(Int), n: Int)
+/// Dada uma lista de valores inteiros e um número inteiro 'n', adiciona n ao final da lista
+pub fn add_final(lista: List(Int), n: Int) -> List(Int){
+    case lista{
+        [] -> [n]
+        [prim] -> [prim, n]
+        [prim, ..resto] -> [prim, ..add_final(resto, n)]
+    }
+}
+
+pub fn add_final_examples(){
+    check.eq(add_final([1, 2, 3], 4), [1, 2, 3, 4])
+    check.eq(add_final([1], 4), [1, 4])
+    check.eq(add_final([], 5), [5])
+}
+
+
+/// Inverte a ordem de uma lista de números inteiros
+pub fn inverte_lista(lista: List(Int)) -> List(Int){
+    case lista{
+        [] -> []
+        [prim] -> [prim]
+        [prim, seg] -> [seg, prim]
+        [prim, seg, ..resto] -> add_final(inverte_lista([seg, ..resto]), prim)
+    }
+}
+
+pub fn inverte_lista_examples(){
+    check.eq(inverte_lista([1, 2, 3, 4]), [4, 3, 2, 1])
+    check.eq(inverte_lista([]), [])
+    check.eq(inverte_lista([1]), [1])
+    check.eq(inverte_lista([1, 2]), [2, 1])
+}
+
+// 14) Nas notas de aula, vimos como fazer uma busca por chave em uma lista de associações de strings com
+// números. Agora você deve projetar uma função que receba como parâmetro uma lista de associações,
+// uma chave (string) e um valor (inteiro) e atualize a lista de associações, isto é, adicione a associação se
+// a chave não estiver presente ou atualize o valor associado com a chave se a chave já estiver presente.
+
+/// Representa um par de valores associados, uma chave de String com um valor numérico Int
+pub type Par{
+    Par(chave: String, valor: Int)
+} 
+
+
+/// Adiciona um novo par de associação em uma lista de associações caso o par ainda não esteja presente na lista
+/// se o par já estiver na lista não faz nada, caso a chave exista mas o valor associado seja diferente, atualiza o valor 
+/// realcionado a chave
+pub fn atualiza_listapar(lista: List(Par), chave: String, valor: Int) -> List(Par){
+    
+} 
+
+
+
+// 15) Projete uma função que determine o valor máximo de uma lista de inteiros.
+
+/// Retorna o valor máximo dentro de uma lista de inteiros
+pub fn max_lista(lista: List(Int)) -> Int{
+    case lista{
+        [] -> 0
+        [n] -> n
+        [prim, seg] if prim >= seg -> prim 
+        [prim, seg] if seg > prim -> seg
+        [prim, ..resto] -> case prim > max_lista(resto){
+            True -> prim
+            False -> max_lista(resto)
+        }
+    }
+}
+
+
+pub fn max_lista_examples(){
+    check.eq(max_lista([1, 2, 5, 6]), 6)
+    check.eq(max_lista([1, 2, -1]), 2)
+    check.eq(max_lista([2]), 2)
+    check.eq(max_lista([1, 2]), 2)
+    check.eq(max_lista([]), 0)
+}
+
+// 16) Projete uma função que crie uma lista de números a partir de uma lista de strings convertendo cada
+// string para um número (use a função int.parse).
+
+/// Retorna uma lista de números a partir de uma lista de Strings
+pub fn conv_string_num(lista: List(String)) -> List(Int){
+    case lista{
+        [] -> []
+        [num] -> case int.parse(num){
+            Error(_) -> []
+            Ok(n) -> [n]
+        }
+        [prim, ..resto] -> case int.parse(prim){
+            Error(_) -> conv_string_num(resto)
+            Ok(n) -> [n, ..conv_string_num(resto)]
+        }
+    }
+} 
+
+pub fn conv_string_num_examples(){
+    check.eq(conv_string_num(["1", "2", "a", "3"]), [1, 2, 3])
+    check.eq(conv_string_num(["1"]), [1])
+    check.eq(conv_string_num(["a", "b", "c"]), [])
+    check.eq(conv_string_num(["1", "2"]), [1, 2])
+}
 
 
 // 17) O Miguel é doutorando em física e precisa coletar dados de um experimento, mas ele só tem à sua dis-
