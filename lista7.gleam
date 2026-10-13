@@ -123,3 +123,60 @@ pub fn eh_par_examples(){
     check.eq(eh_par(0), Ok(True))
     check.eq(eh_par(6), Ok(True))
 }
+
+// 8) Projete uma função que receba como entrada dois inteiros a e b e devolva a lista com os inteiros
+// a, a + 1, . . . , b. Se b < a, a função deve devolver a lista vazia. Use o modelo para inteiros maiores ou
+// iguais a a.
+
+/// Retorna uma lista de números inteiros do intervalo de [a, b], onde a e b são valores inteiros
+/// informados como parâmetro. Trataremos de dois casos, a < b -> retorna a lista no intervalo;
+/// b < a -> retorna lista vazia
+pub fn intervalo(a: Int, b) -> List(Int){
+    case a{
+        _ if a > b -> []
+        _ if a == b -> [b]
+        _ -> [a, ..intervalo(a+1, b)]
+        
+        
+    }
+}
+
+pub fn intervalo_examples(){
+    check.eq(intervalo(5, 8), [5, 6, 7, 8])
+    check.eq(intervalo(7, 4), [])
+    check.eq(intervalo(2, 4), [2, 3, 4])
+    check.eq(intervalo(2, 2), [2])
+}
+
+// 9) Em um determinado jogo de construção de itens, cada item tem uma classe que varia de 1 a 10. Os
+// itens de classe 1 surgem conforme o jogador explora os baús. Um item de classe 2 ou superior precisa
+// ser construído unindo dois itens da classe anterior. Por exemplo, para construir um item de classe 2
+// é necessário unir dois itens de classe 1. Para construir um item de classe 10 é necessário unir dois
+// itens de classe 9. Projete uma função total que receba como entrada a classe de um item e determine
+// quantos itens de classe 1 são necessários para construí-lo. Suponha que as únicas operações aritméticas
+// disponíveis sejam a soma e a multiplicação.
+
+/// Retorna a quantidade de itens de nível 1 necessários para construir um item de nivel 'n', tal que 'n' é o valor
+/// do nível a ser construído informado como parâmetro.
+/// As construções seguem uma regra, para cada nível a ser construído são necessários dois itens do nível anterior, ou seja,
+/// para construir um item de nível 10, são necessários dois itens de nível 9, para construir um item de nível 9, são necessários
+/// dois itens de nível 8, e assim por diante até chegar no nível 1
+pub fn num_um_para_n(nivel: Int) -> Result(Int, String){
+    case nivel{
+        _ if nivel <= 0 -> Error("Nível Não Existente!")
+        _ if nivel <= 10 -> eleva_num(2, nivel - 1)
+        _ -> Error("Nível Não Existente!")
+
+
+    }
+} 
+
+pub fn num_um_para_n_examples(){
+    check.eq(num_um_para_n(3), Ok(4))
+    check.eq(num_um_para_n(6), Ok(32))
+    check.eq(num_um_para_n(2), Ok(2))
+    check.eq(num_um_para_n(1), Ok(1))
+    check.eq(num_um_para_n(0), Error("Nível Não Existente!"))
+    check.eq(num_um_para_n(-5), Error("Nível Não Existente!"))
+    check.eq(num_um_para_n(20), Error("Nível Não Existente!"))
+}
