@@ -1,5 +1,7 @@
 import sgleam/check
 import gleam/list
+import gleam/int
+import gleam/float
 
 // ------------------------------------- EXEMPLOS DOS SLIDES -------------------------------------
 
@@ -53,11 +55,11 @@ pub fn ordena_examples(){
     check.eq(ordena([1, 5, -1]), [-1, 1, 5])
 }
  
-// ---------------------------------------------------------------------------------------------------------------
+// ------------------------------------------ EXERCÍCIOS ------------------------------------------
 
 /// Insere um elemento de maneira ordenada em uma lista
-pub fn insere_ordenado(list: List(Int), a: Int) -> List(Int){
-    case list{
+pub fn insere_ordenado(lst: List(Int), a: Int) -> List(Int){
+    case lst{
         [] -> [a]
         [prim, ..r] -> case prim > a{
             True -> [a, prim, ..r]
@@ -71,4 +73,35 @@ pub fn insere_ordenado_examples(){
     check.eq(insere_ordenado([6], 5), [5, 6])
     check.eq(insere_ordenado([4], 5), [4, 5])
     check.eq(insere_ordenado([4, 6], 5), [4, 5, 6])
+}
+
+// Use as funções list.map, list.filter e list.fold_right (diretamente ou com uma combinação dessas
+// funções) sempre que for apropriado.
+// 10) Uma loja virtual mostra, na tela de finalização da compra, o valor total do carrinho. Cada item do
+// carrinho tem o nome do produto, o preço unitário e a quantidade comprada. Projete uma função que
+// calcule o valor total de um carrinho.
+
+/// Representa as informações de um item de um carrinho de compra
+pub type Item{
+    Item(nome: String, preco: Float, qtde: Int)
+}
+
+/// Retorna o preço total de um item comprado baseando-se no preço unitário e a quantidade comprada
+pub fn total_item(it: Item) -> Float{
+    it.preco *. int.to_float(it.qtde)
+}
+
+pub fn total_item_examples(){
+    check.eq(total_item(Item("Maçã", 1.50, 4)), 6.0)
+    check.eq(total_item(Item("Pão de Queijo", 2.50, 5)), 12.5)
+    check.eq(total_item(Item("Maçã", 1.50, 0)), 0.0)
+}
+
+pub fn total_carrinho(vals: List(Item)) -> Float{
+    let total_prod = list.map(vals, total_item)
+    list.fold_right(total_prod, 0.0, float.add)
+}
+
+pub fn total_carrinho_examples(){
+    check.eq(total_carrinho([Item("Maçã", 1.50, 4), Item("Pão de Queijo", 2.50, 5), Item("Maçã", 1.50, 0)]), 18.5)
 }
