@@ -105,3 +105,33 @@ pub fn total_carrinho(vals: List(Item)) -> Float{
 pub fn total_carrinho_examples(){
     check.eq(total_carrinho([Item("Maçã", 1.50, 4), Item("Pão de Queijo", 2.50, 5), Item("Maçã", 1.50, 0)]), 18.5)
 }
+
+// 11) Ao final do semestre, a secretaria do curso precisa publicar a lista de alunos aprovados em uma
+// disciplina. Um aluno é aprovado se a sua nota é maior ou igual a 6,0. Projete uma função que, a
+// partir do nome e da nota de cada aluno da turma, produza a lista com o nome dos alunos aprovados.
+
+/// Representação dos dados de um aluno genérico de uma escola
+pub type Aluno{
+    Aluno(nome: String, nota: Float)
+}
+
+/// Confere se um aluno teve média acima ou igual a 6.0, garantindo que o aluno passou
+pub fn passou(al: Aluno) -> Bool{
+    al.nota >=. 6.0
+}
+
+pub fn passou_examples(){
+    check.eq(passou(Aluno("Teste", 6.0)), True)
+    check.eq(passou(Aluno("Teste2", 5.9)), False)
+    check.eq(passou(Aluno("Teste3", 7.7)), True)
+}
+
+
+/// Retorna, através de uma lista de alunos, a lista de alunos aprovados na série atual
+pub fn lst_passou(alunos: List(Aluno)) -> List(Aluno){
+    list.filter(alunos, passou)
+}
+
+pub fn lst_passou_examples(){
+    check.eq(lst_passou([Aluno("Teste", 6.0), Aluno("Teste2", 5.9), Aluno("Teste3", 7.7)]), [Aluno("Teste", 6.0), Aluno("Teste3", 7.7)])
+}
